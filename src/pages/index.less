@@ -1,0 +1,151 @@
+@import  "../common.less";
+
+
+.g-le {
+  background:#fff;
+  height: 100%;
+  display: flex;
+  width: 1200px;
+  margin: 0 auto;
+  border: 1px solid #999;
+
+  .g-svg::part(svg) {
+    fill: #ff6600;
+  }
+
+  &>div {
+    height: 100%;
+  }
+
+  .g-tool {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    width: 300px;
+    padding:5px;
+
+    .m-com {
+      width: calc( (100% - 5px)/2 );
+      height: 30px;
+      margin-bottom: 5px;
+      padding: 2px 5px;
+      border:1px solid #ccc;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: @transition;
+
+      &>img {
+        height: 32px;
+        width: 32px;
+        margin: 0 5px 0 0;
+        padding: 7px 0;
+      }
+
+
+      &:nth-child(2n) {
+        margin-left: 5px;
+      }
+
+      &:hover {
+        box-shadow: @box-shadow;
+      }
+    }
+
+  }
+
+  .g-ret {
+    // flex: 1;
+    width: 600px;
+    background:#eee;
+    padding:20px;
+    border-left:1px solid #ccc;
+    border-right:1px solid #ccc;
+
+    .m-item {
+      position:relative;
+      margin: 1px;
+      padding: 10px 10px 0;
+      background: #fff;
+      box-sizing: border-box;
+      border: 1px solid transparent;
+      transition:.3s;
+
+      &.sel>.m-btn {
+        display: block;
+      }
+
+      &>.m-btn {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        display: none;
+        cursor: pointer;
+        z-index: 10;
+
+        &>img {
+          width: 20px;
+          height: 20px;
+          filter: brightness(0.6) ;
+        }
+      }
+
+      &.sel {
+        background:#e6f7ff;
+        border: 1px solid #0cade3;
+      }
+
+      &:hover {
+        border: 1px dashed #ff6600;
+      }
+
+      input,textarea {
+        max-width: 500px;
+        // border:1px solid #ddd;
+      }
+    }
+  }
+
+  .g-prop {
+    flex: 300px;
+    display: flex;
+    flex-direction: column;
+
+
+    .m-wrap {
+      display: flex;
+      flex-direction: column;
+
+      .m-tl {
+        background:#646c80;
+        color: #fff;
+        text-align: center;
+        padding: 5px;
+
+        &>img {
+          width: 24px;
+          height: 24px;
+          filter: brightness(100);
+          margin-right: 5px;
+          padding: 4px 0
+        }
+      }
+
+      .m-attr {
+        margin: 5px 10px;
+
+
+        &>input {
+          border: 1px solid #eee;
+          padding: 5px 10px;
+          font-size: 14px;
+          border-radius: 5px;
+
+        }
+      }
+    }
+  }
+}
+
+
