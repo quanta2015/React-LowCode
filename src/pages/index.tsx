@@ -1,6 +1,7 @@
 import React from 'react'
 import { observer, inject } from 'umi';
 // import { Input,TextArea,Form } from 'antd-mobile';
+import Draggable from 'react-draggable'; 
 import { Input,Form,InputNumber,Radio,Space,Checkbox,Select,Rate,DatePicker,TimePicker  } from 'antd';
 import moment from 'moment'
 import './index.less';
@@ -223,6 +224,60 @@ export default class Index extends React.Component {
     this.setState({ret:ret, sel:null, showProp:false})
   }
 
+
+  doStart=(i,e)=>{
+    let {ret} =this.state
+    ret[i].y = e.pageY
+    this.setState({ret:ret, showProp: false})
+  }
+
+
+  doStop=(i,e)=>{
+    let {ret} =this.state
+
+    // console.log('str:',ret[i].y)
+    // console.log('end:',e.pageY)
+    let pre,pos = i
+    let h = ret[i].height
+
+    if (e.pageY - ret[i].y>0) {
+      let move = e.pageY - ret[i].y
+
+      for(let k=i+1;k<ret.length;k++) {
+        pre = h
+        h += ret[k].height
+        if ((move>pre)&&(move<h)) {
+          pos = k
+        }
+      }
+    }else{
+      let move = ret[i].y - e.pageY
+
+      for(let k=i-1;k>=0;k--) {
+        pre = h
+        h += ret[k].height
+        if ((move>pre)&&(move<h)) {
+          pos = k
+        }
+      }
+    }
+    // console.log(`from: ${i} to:${pos}`)
+
+    if (i!==pos) {
+      let el = ret[i]
+      ret.splice(i,1)
+      ret.splice(pos,0,el)
+      this.setState({ret:ret, sel:null, showProp:false})
+    }
+  }
+
+  doSaveHeight=(i,el)=>{
+    let {ret} =this.state
+    if (!el) return;
+    ret[i].height = el.getBoundingClientRect().height
+  }
+
+
   render() {
 
     let {ret,sel,showProp} = this.state
@@ -231,10 +286,8 @@ export default class Index extends React.Component {
     let attr = (sel!==null)?ret[sel].attr:[]
     let title = (sel!==null)?ret[sel].name:[]
 
-    console.log(ret)
-
-    let t = this.formRef?.current?.getFieldsValue(true)
-    console.log(t)
+    // let t = this.formRef?.current?.getFieldsValue(true)
+    // console.log(t)
     
     return (
       <div className="g-le">
@@ -246,27 +299,25 @@ export default class Index extends React.Component {
             </div>
           )}
 
-
-
         </div>
         <div className="g-ret">
           <Form ref={this.formRef} layout='vertical'>
           {ret.map((item,i)=>
-            <div key={i} 
-              className={(i!==sel)?"m-item":"m-item sel"} 
-              onClick={this.doSelComp.bind(this,i)}
-            >
-              <div className="m-btn" onClick={this.doDelRet.bind(this,i)}><img src={CDN('icon-del')} /></div>
-              <Form.Item 
-                  name={item.field} 
-                  label={item.title} 
-                  initialValue={item.val} 
-                  rules={[{ required: item.req, message: `请输入${item.title}!` }]}
-              >
-                {this.renderRet(item)}
-              </Form.Item>
-              
-            </div>
+            <Draggable  key={i} axis="y" bounds=".g-ret" position={{x:0,y:0}}
+                        onDrag={this.doDrag} 
+                        onStart={this.doStart.bind(this,i)} 
+                        onStop={this.doStop.bind(this,i)}>
+              <div ref={this.doSaveHeight.bind(this,i)} key={i} 
+                   className={(i!==sel)?"m-item":"m-item sel"} 
+                   onClick={this.doSelComp.bind(this,i)} >
+                <label>{i+1}</label>
+                <div className="m-btn" onClick={this.doDelRet.bind(this,i)}><img src={CDN('icon-del')} /></div>
+                <Form.Item name={item.field} label={item.title} initialValue={item.val} 
+                    rules={[{ required: item.req, message: `请输入${item.title}!` }]} >
+                  {this.renderRet(item)}
+                </Form.Item>
+              </div>
+            </Draggable>
           )}
           </Form>
 
@@ -275,7 +326,7 @@ export default class Index extends React.Component {
         <div className="g-prop">
           {(showProp)&&
           <div className="m-wrap">
-            <div className="m-tl"><img src={CDN(selItem.code)} />{title}</div>
+            <div className="m-tl"><img src={CDN(selItem?.code)} />{title}</div>
             <div className="m-attr">
               <label>字段</label>
               <Input value={selItem.field} onChange={this.chgField}></Input>
@@ -285,9 +336,7 @@ export default class Index extends React.Component {
                 {this.renderProp(item,i)}
               </div>
             )}
-
           </div>}
-          
         </div>
       </div>
     );

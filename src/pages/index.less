@@ -1,5 +1,11 @@
 @import  "../common.less";
 
+.react-draggable-dragging {
+  z-index: 999;
+  background:#ff6600;
+  opacity: .7;
+}
+
 
 .g-le {
   background:#fff;
@@ -71,6 +77,19 @@
       box-sizing: border-box;
       border: 1px solid transparent;
       transition:.3s;
+
+      &>label {
+        position: absolute;
+        left: -18px;
+        top: 0px;
+        height: 16px;
+        width: 16px;
+        color:#bf9b2f;
+        background:#fce18f;
+        display: flex;
+        justify-content: center;
+        align-items:center;
+      }
 
       &.sel>.m-btn {
         display: block;
